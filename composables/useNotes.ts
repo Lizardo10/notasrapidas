@@ -10,24 +10,8 @@ export interface Note {
 
 // Estado global de notas
 const notes = ref<Note[]>([])
-let initialized = false
 
 export const useNotes = () => {
-  // Cargar notas solo una vez al usar el composable
-  if (!initialized && typeof window !== 'undefined') {
-    try {
-      const stored = localStorage.getItem('notes-pwa')
-      if (stored) {
-        notes.value = JSON.parse(stored)
-      }
-      initialized = true
-    } catch (error) {
-      console.error('Error al cargar notas:', error)
-      notes.value = []
-      initialized = true
-    }
-  }
-
   // Guardar notas en localStorage
   const saveNotes = () => {
     if (typeof window === 'undefined') return
@@ -37,6 +21,18 @@ export const useNotes = () => {
       console.error('Error al guardar notas:', error)
     }
   }
+
+  // Cargar notas solo en el cliente
+  onMounted(() => {
+    try {
+      const stored = localStorage.getItem('notes-pwa')
+      if (stored) {
+        notes.value = JSON.parse(stored)
+      }
+    } catch (error) {
+      console.error('Error al cargar notas:', error)
+    }
+  })
 
   const totalNotes = computed(() => notes.value.length)
 
