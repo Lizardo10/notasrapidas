@@ -8,33 +8,46 @@ export interface Note {
   updatedAt: number
 }
 
-const notes = ref<Note[]>([])
-let initialized = false
+// Estado global compartido
+const state = {
+  notes: ref<Note[]>([]),
+  loaded: false
+}
+
+// Función para cargar notas del localStorage
+const loadNotes = () => {
+  if (typeof window === 'undefined' || state.loaded) return
+  
+  try {
+    const stored = localStorage.getItem('notes-pwa')
+    if (stored) {
+      state.notes.value = JSON.parse(stored)
+    }
+    state.loaded = true
+    console.log('Notas cargadas desde localStorage:', state.notes.value.length)
+  } catch (error) {
+    console.error('Error al cargar notas:', error)
+    state.loaded = true
+  }
+}
+
+// Función para guardar notas en localStorage
+const saveNotes = () => {
+  if (typeof window === 'undefined') return
+  
+  try {
+    localStorage.setItem('notes-pwa', JSON.stringify(state.notes.value))
+    console.log('Notas guardadas en localStorage:', state.notes.value.length)
+  } catch (error) {
+    console.error('Error al guardar notas:', error)
+  }
+}
 
 export const useNotes = () => {
-  if (!initialized && typeof window !== 'undefined') {
-    try {
-      const stored = localStorage.getItem('notes-pwa')
-      if (stored) {
-        notes.value = JSON.parse(stored)
-      }
-      initialized = true
-    } catch (error) {
-      console.error('Error loading notes:', error)
-      initialized = true
-    }
-  }
+  // Cargar notas solo si no se han cargado antes
+  loadNotes()
 
-  const save = () => {
-    if (typeof window === 'undefined') return
-    try {
-      localStorage.setItem('notes-pwa', JSON.stringify(notes.value))
-    } catch (error) {
-      console.error('Error saving notes:', error)
-    }
-  }
-
-  const totalNotes = computed(() => notes.value.length)
+  const totalNotes = computed(() => state.notes.value.length)
 
   const createNote = (title: string, content: string) => {
     const now = Date.now()
@@ -45,47 +58,50 @@ export const useNotes = () => {
       createdAt: now,
       updatedAt: now
     }
-    notes.value.unshift(newNote)
-    save()
+    state.notes.value.unshift(newNote)
+    saveNotes()
+    console.log('Nota creada:', newNote.id)
     return newNote
   }
 
   const updateNote = (id: string, title: string, content: string) => {
-    const index = notes.value.findIndex(note => note.id === id)
+    const index = state.notes.value.findIndex(note => note.id === id)
     if (index !== -1) {
-      notes.value[index] = {
-        ...notes.value[index],
+      state.notes.value[index] = {
+        ...state.notes.value[index],
         title: title.trim(),
         content: content.trim(),
         updatedAt: Date.now()
       }
-      save()
-      return notes.value[index]
+      saveNotes()
+      console.log('Nota actualizada:', id)
+      return state.notes.value[index]
     }
     return null
   }
 
   const deleteNote = (id: string) => {
-    const index = notes.value.findIndex(note => note.id === id)
+    const index = state.notes.value.findIndex(note => note.id === id)
     if (index !== -1) {
-      notes.value.splice(index, 1)
-      save()
+      state.notes.value.splice(index, 1)
+      saveNotes()
+      console.log('Nota eliminada:', id)
       return true
     }
     return false
   }
 
   const getNote = (id: string) => {
-    return notes.value.find(note => note.id === id) || null
+    return state.notes.value.find(note => note.id === id) || null
   }
 
   const clearAllNotes = () => {
-    notes.value = []
-    save()
+    state.notes.value = []
+    saveNotes()
   }
 
   return {
-    notes: computed(() => notes.value),
+    notes: state.notes,
     totalNotes,
     createNote,
     updateNote,

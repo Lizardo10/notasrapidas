@@ -35,10 +35,13 @@ const { notes, totalNotes, createNote, updateNote, deleteNote } = useNotes()
 const editingNote = ref<{ id: string; title: string; content: string } | null>(null)
 
 const handleSubmit = (data: { title: string; content: string }) => {
+  console.log('handleSubmit recibido en app.vue:', data)
   if (editingNote.value) {
+    console.log('Actualizando nota:', editingNote.value.id)
     updateNote(editingNote.value.id, data.title, data.content)
     editingNote.value = null
   } else {
+    console.log('Creando nueva nota')
     createNote(data.title, data.content)
   }
 }
