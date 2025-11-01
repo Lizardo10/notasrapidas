@@ -24,7 +24,7 @@
       </div>
 
       <div class="actions">
-        <button type="submit" class="btn btn-primary" :disabled="!isValid">
+        <button type="submit" class="btn btn-primary">
           {{ isEditing ? 'Actualizar Nota' : 'Agregar Nota' }}
         </button>
         <button
@@ -56,7 +56,6 @@ const title = ref('')
 const content = ref('')
 
 const isEditing = computed(() => !!props.editingNote)
-const isValid = computed(() => title.value.trim().length > 0 && content.value.trim().length > 0)
 
 // Sincronizar con la nota que se está editando
 watch(() => props.editingNote, (newNote) => {
@@ -70,12 +69,11 @@ watch(() => props.editingNote, (newNote) => {
 }, { immediate: true })
 
 const handleSubmit = () => {
-  if (isValid.value) {
+  if (title.value.trim() && content.value.trim()) {
     emit('submit', {
       title: title.value,
       content: content.value
     })
-    // Limpiar formulario después de enviar
     title.value = ''
     content.value = ''
   }
@@ -93,4 +91,3 @@ const handleCancel = () => {
   animation: fadeIn 0.3s ease;
 }
 </style>
-

@@ -8,32 +8,29 @@ export interface Note {
   updatedAt: number
 }
 
-// Estado global
 const notes = ref<Note[]>([])
-let loaded = false
+let initialized = false
 
 export const useNotes = () => {
-  // Cargar notas solo una vez
-  if (!loaded && typeof window !== 'undefined') {
+  if (!initialized && typeof window !== 'undefined') {
     try {
       const stored = localStorage.getItem('notes-pwa')
       if (stored) {
         notes.value = JSON.parse(stored)
       }
-      loaded = true
+      initialized = true
     } catch (error) {
-      console.error('Error cargando notas:', error)
-      loaded = true
+      console.error('Error loading notes:', error)
+      initialized = true
     }
   }
 
-  // Guardar
   const save = () => {
     if (typeof window === 'undefined') return
     try {
       localStorage.setItem('notes-pwa', JSON.stringify(notes.value))
     } catch (error) {
-      console.error('Error guardando notas:', error)
+      console.error('Error saving notes:', error)
     }
   }
 
