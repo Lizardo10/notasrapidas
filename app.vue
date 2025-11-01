@@ -28,9 +28,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useNotes } from './composables/useNotes'
-
 const { notes, totalNotes, createNote, updateNote, deleteNote } = useNotes()
 
 const editingNote = ref<{ id: string; title: string; content: string } | null>(null)
