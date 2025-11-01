@@ -505,20 +505,3 @@ textarea:focus-visible {
   will-change: transform;
 }
 
-/* Loading states */
-.btn:disabled::after {
-  content: '';
-  width: 16px;
-  height: 16px;
-  border: 2px solid currentColor;
-  border-top-color: transparent;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-  margin-left: 0.5rem;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}

@@ -41,7 +41,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
 
 const props = defineProps<{
   editingNote?: { id: string; title: string; content: string } | null
