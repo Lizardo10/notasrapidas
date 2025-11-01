@@ -12,9 +12,9 @@
         @cancel="handleCancel"
       />
 
-      <div v-if="notesList.length > 0" class="notes-grid">
+      <div v-if="notes.length > 0" class="notes-grid">
         <NoteCard
-          v-for="note in notesList"
+          v-for="note in notes"
           :key="note.id"
           :note="note"
           @edit="handleEdit(note)"
@@ -28,12 +28,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 
 const { notes, totalNotes, createNote, updateNote, deleteNote } = useNotes()
-
-// Computed para acceder correctamente al valor del ref
-const notesList = computed(() => notes.value)
 
 const editingNote = ref<{ id: string; title: string; content: string } | null>(null)
 
