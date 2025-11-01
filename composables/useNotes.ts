@@ -8,42 +8,37 @@ export interface Note {
   updatedAt: number
 }
 
-// Estado global compartido
+// Estado global de notas
 const notes = ref<Note[]>([])
-let loaded = false
-
-// Función para cargar notas del localStorage
-const loadNotes = () => {
-  if (typeof window === 'undefined' || loaded) return
-  
-  try {
-    const stored = localStorage.getItem('notes-pwa')
-    if (stored) {
-      notes.value = JSON.parse(stored)
-    }
-    loaded = true
-    console.log('Notas cargadas desde localStorage:', notes.value.length)
-  } catch (error) {
-    console.error('Error al cargar notas:', error)
-    loaded = true
-  }
-}
-
-// Función para guardar notas en localStorage
-const saveNotes = () => {
-  if (typeof window === 'undefined') return
-  
-  try {
-    localStorage.setItem('notes-pwa', JSON.stringify(notes.value))
-    console.log('Notas guardadas en localStorage:', notes.value.length)
-  } catch (error) {
-    console.error('Error al guardar notas:', error)
-  }
-}
 
 export const useNotes = () => {
-  // Cargar notas solo si no se han cargado antes
-  loadNotes()
+  // Función para cargar notas del localStorage
+  const loadNotes = () => {
+    if (process.server) return
+    try {
+      const stored = localStorage.getItem('notes-pwa')
+      if (stored) {
+        notes.value = JSON.parse(stored)
+      }
+    } catch (error) {
+      console.error('Error al cargar notas:', error)
+    }
+  }
+
+  // Función para guardar notas en localStorage
+  const saveNotes = () => {
+    if (process.server) return
+    try {
+      localStorage.setItem('notes-pwa', JSON.stringify(notes.value))
+    } catch (error) {
+      console.error('Error al guardar notas:', error)
+    }
+  }
+
+  // Cargar notas al inicializar
+  if (process.client && notes.value.length === 0) {
+    loadNotes()
+  }
 
   const totalNotes = computed(() => notes.value.length)
 
@@ -58,7 +53,6 @@ export const useNotes = () => {
     }
     notes.value.unshift(newNote)
     saveNotes()
-    console.log('Nota creada:', newNote.id)
     return newNote
   }
 
@@ -72,7 +66,6 @@ export const useNotes = () => {
         updatedAt: Date.now()
       }
       saveNotes()
-      console.log('Nota actualizada:', id)
       return notes.value[index]
     }
     return null
@@ -83,7 +76,6 @@ export const useNotes = () => {
     if (index !== -1) {
       notes.value.splice(index, 1)
       saveNotes()
-      console.log('Nota eliminada:', id)
       return true
     }
     return false

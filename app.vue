@@ -35,20 +35,16 @@ const { notes, totalNotes, createNote, updateNote, deleteNote } = useNotes()
 const editingNote = ref<{ id: string; title: string; content: string } | null>(null)
 
 const handleSubmit = (data: { title: string; content: string }) => {
-  console.log('handleSubmit recibido en app.vue:', data)
   if (editingNote.value) {
-    console.log('Actualizando nota:', editingNote.value.id)
     updateNote(editingNote.value.id, data.title, data.content)
     editingNote.value = null
   } else {
-    console.log('Creando nueva nota')
     createNote(data.title, data.content)
   }
 }
 
 const handleEdit = (note: { id: string; title: string; content: string }) => {
   editingNote.value = note
-  // Scroll suave al formulario
   const form = document.querySelector('.note-form')
   if (form) {
     form.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -69,4 +65,3 @@ const handleDelete = (id: string) => {
 <style>
 @import '~/assets/css/main.css';
 </style>
-

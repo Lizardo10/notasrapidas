@@ -57,7 +57,6 @@ const content = ref('')
 
 const isEditing = computed(() => !!props.editingNote)
 
-// Sincronizar con la nota que se está editando
 watch(() => props.editingNote, (newNote) => {
   if (newNote) {
     title.value = newNote.title
@@ -69,17 +68,13 @@ watch(() => props.editingNote, (newNote) => {
 }, { immediate: true })
 
 const handleSubmit = () => {
-  console.log('handleSubmit llamado:', { title: title.value, content: content.value })
   if (title.value.trim() && content.value.trim()) {
-    console.log('Emitting submit event')
     emit('submit', {
       title: title.value,
       content: content.value
     })
     title.value = ''
     content.value = ''
-  } else {
-    console.log('Validación falló:', { titleValid: title.value.trim() !== '', contentValid: content.value.trim() !== '' })
   }
 }
 
