@@ -8,40 +8,33 @@ export interface Note {
   updatedAt: number
 }
 
-// Estado global de notas
+// Estado global
 const notes = ref<Note[]>([])
 let loaded = false
 
-// Cargar notas del localStorage
-const loadNotes = () => {
-  if (typeof window === 'undefined' || loaded) return
-  
-  try {
-    const stored = localStorage.getItem('notes-pwa')
-    if (stored) {
-      notes.value = JSON.parse(stored)
-    }
-    loaded = true
-  } catch (error) {
-    console.error('Error al cargar notas:', error)
-    loaded = true
-  }
-}
-
-// Guardar notas en localStorage
-const saveNotes = () => {
-  if (typeof window === 'undefined') return
-  try {
-    localStorage.setItem('notes-pwa', JSON.stringify(notes.value))
-  } catch (error) {
-    console.error('Error al guardar notas:', error)
-  }
-}
-
 export const useNotes = () => {
-  // Cargar notas una sola vez
-  if (typeof window !== 'undefined' && !loaded) {
-    loadNotes()
+  // Cargar notas solo una vez
+  if (!loaded && typeof window !== 'undefined') {
+    try {
+      const stored = localStorage.getItem('notes-pwa')
+      if (stored) {
+        notes.value = JSON.parse(stored)
+      }
+      loaded = true
+    } catch (error) {
+      console.error('Error cargando notas:', error)
+      loaded = true
+    }
+  }
+
+  // Guardar
+  const save = () => {
+    if (typeof window === 'undefined') return
+    try {
+      localStorage.setItem('notes-pwa', JSON.stringify(notes.value))
+    } catch (error) {
+      console.error('Error guardando notas:', error)
+    }
   }
 
   const totalNotes = computed(() => notes.value.length)
@@ -56,21 +49,21 @@ export const useNotes = () => {
       updatedAt: now
     }
     notes.value.unshift(newNote)
-    saveNotes()
+    save()
     return newNote
   }
 
   const updateNote = (id: string, title: string, content: string) => {
-    const noteIndex = notes.value.findIndex(note => note.id === id)
-    if (noteIndex !== -1) {
-      notes.value[noteIndex] = {
-        ...notes.value[noteIndex],
+    const index = notes.value.findIndex(note => note.id === id)
+    if (index !== -1) {
+      notes.value[index] = {
+        ...notes.value[index],
         title: title.trim(),
         content: content.trim(),
         updatedAt: Date.now()
       }
-      saveNotes()
-      return notes.value[noteIndex]
+      save()
+      return notes.value[index]
     }
     return null
   }
@@ -79,7 +72,7 @@ export const useNotes = () => {
     const index = notes.value.findIndex(note => note.id === id)
     if (index !== -1) {
       notes.value.splice(index, 1)
-      saveNotes()
+      save()
       return true
     }
     return false
@@ -91,7 +84,7 @@ export const useNotes = () => {
 
   const clearAllNotes = () => {
     notes.value = []
-    saveNotes()
+    save()
   }
 
   return {
