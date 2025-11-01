@@ -33,8 +33,8 @@ const saveNotes = () => {
   }
 }
 
-// Cargar notas al inicializar
-if (process.client) {
+// Cargar notas al inicializar (solo en cliente)
+if (typeof window !== 'undefined') {
   loadNotes()
 }
 
