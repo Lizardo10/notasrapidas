@@ -2,6 +2,7 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
   compatibilityDate: '2024-04-03',
+  ssr: false, // Desactivar SSR para PWA con localStorage
   
   modules: [
     '@vite-pwa/nuxt'
