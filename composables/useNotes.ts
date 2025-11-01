@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 
 export interface Note {
   id: string
@@ -8,34 +8,38 @@ export interface Note {
   updatedAt: number
 }
 
-const notes = ref<Note[]>([])
-
-// Cargar notas del localStorage al inicializar
-const loadNotes = () => {
-  try {
-    const stored = localStorage.getItem('notes-pwa')
-    if (stored) {
-      notes.value = JSON.parse(stored)
-    }
-  } catch (error) {
-    console.error('Error al cargar notas:', error)
-    notes.value = []
-  }
-}
-
-// Guardar notas en localStorage
-const saveNotes = () => {
-  try {
-    localStorage.setItem('notes-pwa', JSON.stringify(notes.value))
-  } catch (error) {
-    console.error('Error al guardar notas:', error)
-  }
-}
-
-// Inicializar al cargar el composable
-loadNotes()
-
 export const useNotes = () => {
+  const notes = ref<Note[]>([])
+
+  // Cargar notas del localStorage
+  const loadNotes = () => {
+    if (typeof window === 'undefined') return
+    try {
+      const stored = localStorage.getItem('notes-pwa')
+      if (stored) {
+        notes.value = JSON.parse(stored)
+      }
+    } catch (error) {
+      console.error('Error al cargar notas:', error)
+      notes.value = []
+    }
+  }
+
+  // Guardar notas en localStorage
+  const saveNotes = () => {
+    if (typeof window === 'undefined') return
+    try {
+      localStorage.setItem('notes-pwa', JSON.stringify(notes.value))
+    } catch (error) {
+      console.error('Error al guardar notas:', error)
+    }
+  }
+
+  // Cargar notas al montar el componente (solo en cliente)
+  onMounted(() => {
+    loadNotes()
+  })
+
   const totalNotes = computed(() => notes.value.length)
 
   const createNote = (title: string, content: string) => {
@@ -96,4 +100,3 @@ export const useNotes = () => {
     clearAllNotes
   }
 }
-

@@ -11,7 +11,7 @@ def crear_directorio():
 
 def crear_icono_png_simple(size, filename):
     """Crear un PNG simple con color sólido usando base64"""
-    # PNG mínimo de 64x64 con color #4CAF50 (verde)
+    # PNG mínimo con color #2563eb (azul profesional)
     # Este es un PNG de 1x1 pixel que PNG válido más simple
     png_data = {
         64: b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00@\x00\x00\x00@\x08\x06\x00\x00\x00\xaaiq\xde\x00\x00\x00\x19tEXtSoftware\x00Adobe ImageReadyq\xc9e<\x00\x00\x00\x0eIDATx\xdac\xf8\x0f\x00\x00\x01\x00\x01\x00\x18\xdd\x8d\xb4\x00\x00\x00\x00IEND\xaeB`\x82',

@@ -1,7 +1,7 @@
 <template>
   <div>
     <header class="header">
-      <h1>📝 Notas Rápidas</h1>
+      <h1>Notas</h1>
       <p>{{ totalNotes }} {{ totalNotes === 1 ? 'nota guardada' : 'notas guardadas' }}</p>
     </header>
 

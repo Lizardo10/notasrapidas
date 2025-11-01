@@ -1,6 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
+  compatibilityDate: '2024-04-03',
   
   modules: [
     '@vite-pwa/nuxt'
@@ -9,10 +10,10 @@ export default defineNuxtConfig({
   pwa: {
     registerType: 'autoUpdate',
     manifest: {
-      name: 'Notas Rápidas',
+      name: 'Notas',
       short_name: 'Notas',
-      description: 'Aplicación de notas que funciona offline',
-      theme_color: '#4CAF50',
+      description: 'Aplicación de notas profesional que funciona offline',
+      theme_color: '#2563eb',
       background_color: '#ffffff',
       display: 'standalone',
       orientation: 'portrait',
@@ -57,12 +58,12 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: 'Notas Rápidas',
+      title: 'Notas',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' },
-        { name: 'description', content: 'Aplicación de notas offline con PWA' },
-        { name: 'theme-color', content: '#4CAF50' },
+        { name: 'description', content: 'Aplicación profesional de notas offline' },
+        { name: 'theme-color', content: '#2563eb' },
         { name: 'mobile-web-app-capable', content: 'yes' },
         { name: 'apple-mobile-web-app-capable', content: 'yes' },
         { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' }

@@ -25,7 +25,6 @@
 
       <div class="actions">
         <button type="submit" class="btn btn-primary" :disabled="!isValid">
-          <span>{{ isEditing ? '✨' : '➕' }}</span>
           {{ isEditing ? 'Actualizar Nota' : 'Agregar Nota' }}
         </button>
         <button
