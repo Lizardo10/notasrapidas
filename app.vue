@@ -1,0 +1,70 @@
+<template>
+  <div>
+    <header class="header">
+      <h1>📝 Notas Rápidas</h1>
+      <p>{{ totalNotes }} {{ totalNotes === 1 ? 'nota guardada' : 'notas guardadas' }}</p>
+    </header>
+
+    <main class="container">
+      <NoteForm
+        :editing-note="editingNote"
+        @submit="handleSubmit"
+        @cancel="handleCancel"
+      />
+
+      <div v-if="notes.length > 0" class="notes-grid">
+        <NoteCard
+          v-for="note in notes"
+          :key="note.id"
+          :note="note"
+          @edit="handleEdit(note)"
+          @delete="handleDelete(note.id)"
+        />
+      </div>
+
+      <EmptyState v-else />
+    </main>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useNotes } from './composables/useNotes'
+
+const { notes, totalNotes, createNote, updateNote, deleteNote } = useNotes()
+
+const editingNote = ref<{ id: string; title: string; content: string } | null>(null)
+
+const handleSubmit = (data: { title: string; content: string }) => {
+  if (editingNote.value) {
+    updateNote(editingNote.value.id, data.title, data.content)
+    editingNote.value = null
+  } else {
+    createNote(data.title, data.content)
+  }
+}
+
+const handleEdit = (note: { id: string; title: string; content: string }) => {
+  editingNote.value = note
+  // Scroll suave al formulario
+  const form = document.querySelector('.note-form')
+  if (form) {
+    form.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+}
+
+const handleCancel = () => {
+  editingNote.value = null
+}
+
+const handleDelete = (id: string) => {
+  if (confirm('¿Estás seguro de que quieres eliminar esta nota?')) {
+    deleteNote(id)
+  }
+}
+</script>
+
+<style>
+@import '~/assets/css/main.css';
+</style>
+
